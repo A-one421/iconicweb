@@ -1,0 +1,118 @@
+/* 
+/* Leadership Section 
+.leadership-section {
+  padding: 50px 20px;
+  text-align: center;
+  background: #f9fafc;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #222;
+}
+
+.section-description {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: #555;
+  margin: 0 auto 35px;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+/* Leadership Grid - Carousel Style */
+/* .leadership-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 20px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 12px 10px;
+} */
+
+/* Hide scrollbar */
+.leadership-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.leader-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: transform 0.25s, box-shadow 0.25s;
+  scroll-snap-align: start;
+}
+
+.leader-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Image Wrapper */
+.leader-image-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  margin: 0 auto 16px auto;
+  max-width: clamp(120px, 25vw, 180px);
+}
+
+.leader-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Text */
+.leader-name {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 600;
+  margin: 10px 0 6px;
+  color: #111;
+}
+
+.leader-job-title {
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-weight: 500;
+  color: #007bff;
+  margin-bottom: 14px;
+}
+
+.leader-bio {
+  font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Mobile: 1 card per view */
+@media (max-width: 767px) {
+  .leader-card {
+    flex: 0 0 100%; /* one full card per screen */
+  }
+}
+
+/* Tablet: 2 cards per view
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .leader-card {
+      flex: 0 0 50%; 
+    }
+  } */
+
+@media (min-width: 1200px) {
+  .leader-card {
+    flex: 0 0 25%; /* four cards per screen */
+  }
+}
