@@ -1,72 +1,193 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- Hero Section Carousel Logic (NEW) ---
+  // --- Hero Section Carousel Logic  ---
   const slides = document.querySelectorAll(".slide");
   let currentSlide = 0;
 
   function showNextSlide() {
-    // Hide the current slide by removing its class
     slides[currentSlide].classList.remove("active-slide");
-
-    // Increment the slide index, and loop back to 0 if at the end
     currentSlide = (currentSlide + 1) % slides.length;
-
-    // Show the next slide by adding the active class
     slides[currentSlide].classList.add("active-slide");
   }
 
-  // Set the first slide to be active on load
-  slides[currentSlide].classList.add("active-slide");
+  if (slides.length > 0) {
+    slides[currentSlide].classList.add("active-slide");
+    setInterval(showNextSlide, 5000);
+  }
 
-  // Automatically change the slide every 5 seconds (5000 milliseconds)
-  setInterval(showNextSlide, 5000);
-
-  // --- Dropdown Menu Logic (UPDATED for mobile clicks) ---
+  // --- Dropdown Menu Logic (FIXED: Mobile Click persistence) ---
   const dropdowns = document.querySelectorAll(".dropdown");
+  const navLinks = document.getElementById("nav-links");
+  const menuToggle = document.getElementById("menu-toggle");
+
+  const MOBILE_BREAKPOINT = 1024;
 
   dropdowns.forEach((dropdown) => {
-    dropdown.addEventListener("mouseenter", function (event) {
-      // Toggle the 'show-dropdown' class on the clicked dropdown
-      this.classList.toggle("show-dropdown");
+    const dropdownLink = dropdown.querySelector("a");
 
-      // Close other dropdowns if they are open
-      dropdowns.forEach((otherDropdown) => {
-        if (otherDropdown !== this) {
-          otherDropdown.classList.remove("show-dropdown");
+    dropdown.addEventListener("mouseenter", function (event) {
+      if (window.innerWidth > MOBILE_BREAKPOINT) {
+        this.classList.add("show-dropdown");
+        // Close other dropdown wen one of the dropdown is clicked
+        dropdowns.forEach((otherDropdown) => {
+          if (otherDropdown !== this) {
+            otherDropdown.classList.remove("show-dropdown");
+          }
+        });
+      }
+    });
+
+    dropdown.addEventListener("mouseleave", function (event) {
+      if (window.innerWidth > MOBILE_BREAKPOINT) {
+        this.classList.remove("show-dropdown");
+      }
+    });
+
+    dropdownLink.addEventListener("click", function (event) {
+      if (window.innerWidth <= MOBILE_BREAKPOINT) {
+        const subMenu = dropdown.querySelector(".dropdown-menu");
+
+        // Only prevent default if there's a submenu to open
+        if (subMenu && subMenu.children.length > 0) {
+          event.preventDefault();
         }
-      });
+
+        dropdown.classList.toggle("show-dropdown");
+
+        dropdowns.forEach((otherDropdown) => {
+          if (otherDropdown !== dropdown) {
+            otherDropdown.classList.remove("show-dropdown");
+          }
+        });
+      }
     });
   });
 
-  // Close menus if clicking outside of them
   window.addEventListener("click", function (event) {
-    if (!event.target.closest(".dropdown")) {
-      document.querySelectorAll(".dropdown").forEach((dropdown) => {
+    if (
+      window.innerWidth > MOBILE_BREAKPOINT &&
+      !event.target.closest(".dropdown")
+    ) {
+      dropdowns.forEach((dropdown) => {
         dropdown.classList.remove("show-dropdown");
       });
     }
   });
 
-  // --- Mobile Menu Toggle ---
-  const menuToggle = document.getElementById("menu-toggle");
-  const navLinks = document.getElementById("nav-links");
+  // --- Mobile Menu Toggle (Hamburger/Cross Icon) ---
+  if (menuToggle && navLinks) {
+    menuToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+      menuToggle.classList.toggle("active");
+    });
+  }
 
-  menuToggle.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-    menuToggle.classList.toggle("active");
+  // --- Close Mobile Menu on Sub-Link Click (After navigating) ---
+  const navLinksList = document.querySelectorAll("#nav-links a");
+  navLinksList.forEach((link) => {
+    link.addEventListener("click", () => {
+      // Check if the menu is open AND it's a mobile size
+      if (
+        window.innerWidth <= MOBILE_BREAKPOINT &&
+        navLinks.classList.contains("active")
+      ) {
+        // We only close the menu if the click is not on a dropdown parent
+        if (!link.closest(".dropdown")) {
+          setTimeout(() => {
+            navLinks.classList.remove("active");
+            if (menuToggle) menuToggle.classList.remove("active");
+
+            dropdowns.forEach((dropdown) => {
+              dropdown.classList.remove("show-dropdown");
+            });
+          }, 50);
+        }
+      }
+    });
   });
 
-  // --- Animate Hero Text on Page Load ---
+  // --- Hero text animationnnnnn
   window.addEventListener("load", () => {
-    document.querySelector(".hero h1").style.opacity = "1";
-    document.querySelector(".hero h1").style.transform = "translateY(0)";
+    const heroH1 = document.querySelector(".hero h1");
+    const heroSectors = document.querySelector(".hero-sectors");
 
-    document.querySelector(".hero-sectors").style.opacity = "1";
-    document.querySelector(".hero-sectors").style.transform = "translateY(0)";
+    if (heroH1) {
+      heroH1.style.opacity = "1";
+      heroH1.style.transform = "translateY(0)";
+    }
+    if (heroSectors) {
+      heroSectors.style.opacity = "1";
+      heroSectors.style.transform = "translateY(0)";
+    }
   });
+
+  // --- **NEW** Search Icon/API Functionality UI ---
+  const searchToggle = document.getElementById("search-toggle");
+  const searchOverlay = document.getElementById("search-overlay");
+  const closeSearch = document.getElementById("close-search");
+  const searchForm = document.querySelector(".search-form");
+  const searchInput = document.querySelector(".search-form input");
+
+  // Show search overlay
+  if (searchToggle && searchOverlay) {
+    searchToggle.addEventListener("click", (event) => {
+      event.preventDefault();
+      // Close mobile menu if open
+      navLinks.classList.remove("active");
+      menuToggle.classList.remove("active");
+
+      searchOverlay.classList.add("active");
+      setTimeout(() => {
+        if (searchInput) searchInput.focus();
+      }, 50);
+    });
+  }
+
+  // Hide search overlay
+  function closeSearchOverlay() {
+    if (searchOverlay) {
+      searchOverlay.classList.remove("active");
+    }
+  }
+
+  if (closeSearch) {
+    closeSearch.addEventListener("click", closeSearchOverlay);
+  }
+
+  // Handle escape key to close
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && searchOverlay.classList.contains("active")) {
+      closeSearchOverlay();
+    }
+  });
+
+  // Handle outside click to close
+  if (searchOverlay) {
+    searchOverlay.addEventListener("click", (event) => {
+      if (event.target === searchOverlay) {
+        closeSearchOverlay();
+      }
+    });
+  }
+
+  // Mock search submission (client-side only for UI)
+  if (searchForm) {
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = searchInput.value.trim();
+      if (query) {
+        alert(`Performing search for: "${query}" (Simulated API call)`);
+        // In a real application, you would make an API call here.
+        // E.g., fetch('/api/search?q=' + encodeURIComponent(query))
+        closeSearchOverlay();
+        searchInput.value = ""; // Clear input after search
+      } else {
+        alert("Please enter a search term.");
+      }
+    });
+  }
 });
 
 // About us section
-// Add staggered animation for cards
 document.addEventListener("DOMContentLoaded", () => {
   const cards = document.querySelectorAll(".image-card");
   cards.forEach((card, index) => {
@@ -90,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isMobile) {
       // Scroll one card at a time on mobile
-      scrollAmount = valueCards[0].offsetWidth + 15; // 15px is the gap
+      scrollAmount = valueCards[0].offsetWidth + 20; // 20px is the gap
     } else {
       // Scroll four cards at a time on desktop
       scrollAmount = (valueCards[0].offsetWidth + 20) * 4; // 20px is the gap
@@ -122,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const valuesGrid = document.querySelector(".values-grid");
   const prevButton = document.querySelector(".nav-button.prev");
   const nextButton = document.querySelector(".nav-button.next");
-  const scrollAmount = 250; // Adjust this value to change how much it scrolls
+  const scrollAmount = 250;
 
   if (valuesGrid && prevButton && nextButton) {
     nextButton.addEventListener("click", () => {
@@ -140,52 +261,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-// Building sustain
+
+// Buiikding sustainable section
 
 // Add simple interactivity
 const exploreBtn = document.getElementById("exploreBtn");
 
-exploreBtn.addEventListener("click", () => {
-  alert("Redirecting to our Goal & SDG page...");
-  // You can replace alert with actual redirect like:
-  // window.location.href = "goals.html";
-});
+if (exploreBtn) {
+  exploreBtn.addEventListener("click", () => {
+    alert("Redirecting to our Goal & SDG page...");
+    // window.location.href = "goals.html";
+  });
+}
 
-// Optional: fade-in animation when section enters view
+// Animation effecr when section enter
 const section = document.querySelector(".sustainable-section");
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      section.classList.add("visible");
-    }
+if (section) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        section.classList.add("visible");
+      }
+    });
   });
-});
 
-observer.observe(section);
-
-// Leadership section
-
-// const leaderCards = document.querySelectorAll(".leader-card");
-
-// const observers = new IntersectionObserver(
-//   (entries) => {
-//     entries.forEach((entry) => {
-//       if (entry.isIntersecting) {
-//         entry.target.classList.add("visible");
-//         observers.unobserve(entry.target); // This will prevent continous animation
-//       }
-//     });
-//   },
-//   { threshold: 0.2 }
-// );
-
-// leaderCards.forEach((card) => observers.observe(card));
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const leaderImages = document.querySelectorAll(".leader-image");
-//   const imageSize = 400; // Consistent size for random images
-// });
+  observer.observe(section);
+}
 
 // footer
 
@@ -196,16 +298,21 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (event) => {
       event.preventDefault(); // Prevents the page from reloading on form submission
 
-      const firstName = form.querySelector('input[type="text"]').value;
-      const email = form.querySelector('input[type="email"]').value;
+      const firstNameInput = form.querySelector('input[type="text"]');
+      const emailInput = form.querySelector('input[type="email"]');
+
+      const firstName = firstNameInput ? firstNameInput.value : "N/A";
+      const email = emailInput ? emailInput.value : "N/A";
 
       console.log("Form Submission Details:");
       console.log(`First Name: ${firstName}`);
       console.log(`Email: ${email}`);
 
-      alert(
-        "Thank you for subscribing! Check the console for submission details."
-      );
+      alert("Thank you for subscribing!!!!!");
+
+      // Optional: Clear fields
+      if (firstNameInput) firstNameInput.value = "";
+      if (emailInput) emailInput.value = "";
     });
   }
 });

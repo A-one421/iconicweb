@@ -18,7 +18,6 @@ body {
   overflow-x: hidden;
 }
 
-/* General Section Padding - A good practice to apply consistent vertical padding */
 section {
   padding: 30px 20px;
 }
@@ -38,6 +37,7 @@ nav {
   backdrop-filter: blur(8px);
   border-bottom: 1px solid #e0e0e0;
   z-index: 1000;
+  min-height: 56px;
 }
 
 .logo-container {
@@ -75,6 +75,9 @@ nav ul li a {
   letter-spacing: 0.5px;
   transition: color 0.3s;
   cursor: pointer;
+
+  padding: 10px 0;
+  display: block;
 }
 
 nav ul li a:hover {
@@ -87,11 +90,12 @@ nav ul li a:hover {
   font-size: 12px;
 }
 
-/* Dropdown Menu Styling */
+/* Dropdown Menu Styling (Desktop) */
 .dropdown-menu {
   display: none;
   position: absolute;
-  top: 40px;
+
+  top: 100%;
   left: 0;
   background: #fff;
   min-width: 180px;
@@ -111,12 +115,13 @@ nav ul li a:hover {
   display: block;
 }
 
-/* Mobile Menu - kept for responsiveness */
+/* Mobile Menu Toggle */
 .menu-toggle {
   display: none;
   font-size: 28px;
   cursor: pointer;
   color: #333;
+  z-index: 1001;
 }
 
 .menu-toggle .hamburger-icon {
@@ -495,6 +500,68 @@ nav ul li a:hover {
 }
 
 /* =======================================
+ * Sustainable Section
+ * ======================================= */
+.sustainable-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 40px 8%;
+  background-color: #f0f0f5;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.sustainable-text {
+  flex: 1;
+}
+
+.sustainable-text h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.sustainable-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  color: #444;
+}
+/* Styling hover */
+.sustainable-text button {
+  padding: 12px 20px;
+  border: 2px solid #001f3f;
+  color: #001f3f;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  border-radius: 30px;
+}
+
+.sustainable-text button:hover {
+  background: #001f3f;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.sustainable-img {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.sustainable-img img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =======================================
  * Animations
  * ======================================= */
 @keyframes fadeUp {
@@ -524,18 +591,25 @@ nav ul li a:hover {
   nav {
     padding: 15px 20px;
   }
+
+  /* MOBILE MENU STYLE ADJUSTMENT */
   nav ul {
     position: fixed;
-    top: 76px;
-    right: 0;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: calc(100vh - 56px);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(5px);
     flex-direction: column;
-    background: #fff;
-    width: 250px;
-    height: 100vh;
-    padding: 30px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 20px 30px;
     display: none;
     gap: 25px;
-    align-items: flex-start;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
   }
 
   nav ul.active {
@@ -544,7 +618,7 @@ nav ul li a:hover {
 
   .menu-toggle {
     display: block;
-    font-size: 28px;
+    font-size: 30px;
   }
 
   .menu-toggle.active .hamburger-icon {
@@ -553,33 +627,54 @@ nav ul li a:hover {
 
   .menu-toggle.active .close-icon {
     display: inline-block;
+    font-size: 30px;
   }
 
+  /* DROPDOWN MENU ADJUSTMENTS (MOBILE) */
   .dropdown > a::after {
     content: none;
   }
 
+  /* This is the mobile/vertical menu dropdown arrow */
   .dropdown a::after {
     content: "\25BE";
     float: right;
     transition: transform 0.3s ease;
   }
 
+  /* This flips the icon when the mobile dropdown is open no stress*/
   .dropdown.show-dropdown a::after {
     transform: rotate(180deg);
   }
+
+  .dropdown-menu {
+    position: static;
+    padding: 10px 0 10px 15px;
+    min-width: 100%;
+    border: none;
+    box-shadow: none;
+    background: none;
+    border-left: 2px solid #c8102e;
+  }
+
+  .dropdown-menu li {
+    margin-top: 5px;
+    line-height: 1.5rem;
+  }
+
+  /* Sustainable Section Mobile Stack */
+  .sustainable-section {
+    flex-direction: column;
+    padding: 40px 5%;
+    gap: 30px;
+    text-align: center;
+  }
+
+  .sustainable-text {
+    text-align: center;
+  }
 }
 
-/* ... within the @media (max-width: 768px) block ... */
-.nav-button {
-  width: 32px;
-  height: 32px;
-}
-
-.nav-icon {
-  width: 18px;
-  height: 18px;
-}
 @media (max-width: 768px) {
   /* Hero Section Adjustments */
   .hero {
@@ -588,15 +683,18 @@ nav ul li a:hover {
 
   .hero-content {
     padding: 20px;
+    line-height: 2.5rem;
   }
 
+  /* ADJUSTED H1 FONT SIZE */
   .hero h1 {
-    font-size: 30px;
+    font-size: 24px;
   }
 
-  .hero p,
-  .hero .hero-sectors {
-    font-size: 12px;
+  /* ADJUSTED HEADING PARA FONT SIZE */
+  .heading-para {
+    font-size: 16px;
+    line-height: 1.5em;
   }
 
   /* About Section Adjustments */
@@ -676,71 +774,9 @@ nav ul li a:hover {
   .value-card p {
     font-size: 0.7em;
   }
-}
 
-@media (max-width: 480px) {
-  .button1 {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 30px;
-  }
-}
-/* Building sustaunannnn*/
-
-.sustainable-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-  padding: 40px 8%;
-}
-
-.sustainable-text {
-  flex: 1;
-}
-
-.sustainable-text h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.sustainable-text p {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 25px;
-  color: #444;
-}
-
-.sustainable-text button {
-  padding: 12px 20px;
-  border: 1px solid #001f3f;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.sustainable-text button:hover {
-  background: #001f3f;
-  color: #fff;
-}
-
-.sustainable-img {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.sustainable-img img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-}
-
-/* Responsive for mobile */
-@media (max-width: 768px) {
+  /* Sustainable Section Mobile adjustments */
   .sustainable-section {
-    flex-direction: column;
     padding: 25px 5%;
     gap: 20px;
   }
@@ -757,12 +793,30 @@ nav ul li a:hover {
 
   .sustainable-img img {
     width: 90%;
-    max-height: 220px; /* reduce height */
+    max-height: 220px;
     object-fit: cover;
   }
 }
 
 @media (max-width: 480px) {
+  .button1 {
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 30px;
+  }
+
+  /* REDUCED H1 FONT SIZE */
+  .hero h1 {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+
+  /* REDUCED HEADING PARA FONT SIZE */
+  .heading-para {
+    font-size: 14px;
+    line-height: 1.4em;
+  }
+
   .sustainable-text h2 {
     font-size: 1.4rem;
   }
@@ -777,18 +831,11 @@ nav ul li a:hover {
   }
 }
 
-.sustainable-section {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s ease-in-out;
-}
+/* I gave the footer different styling from the other page */
 
-.sustainable-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* footer section styling*/
+/* =======================================
+ * Footer Styling
+ * ======================================= */
 :root {
   --primary-red: #ef4444;
   --secondary-gray: #4b5563;
@@ -797,15 +844,14 @@ nav ul li a:hover {
   --text-color: #6b7280;
 }
 
-/* Footer Section - FIXED: Reduced padding to eliminate extra space */
 .footer {
   background-color: #fff;
-  padding: 2rem 1.5rem 1rem; /* Reduced top padding and bottom padding */
+  padding: 2rem 1.5rem 1rem;
   color: #6b7280;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
-  margin-bottom: 0; /* Ensure no margin at bottom */
+  margin-bottom: 0;
 }
 
 .footer-container {
@@ -813,13 +859,13 @@ nav ul li a:hover {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* Reduced gap */
+  gap: 2rem;
 }
 
 /* Sign Up Section */
 .signup-section {
   border-bottom: 1px solid #d1d5db;
-  padding-bottom: 1.5rem; /* Reduced padding */
+  padding-bottom: 1.5rem;
   text-align: center;
 }
 
@@ -827,7 +873,7 @@ nav ul li a:hover {
   font-size: 1.5rem;
   font-weight: 500;
   color: gray;
-  margin-bottom: 1rem; /* Reduced margin */
+  margin-bottom: 1rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -852,7 +898,7 @@ nav ul li a:hover {
   width: 100%;
   max-width: 20rem;
   border: 1px solid #d1d5db;
-  border-radius: 9999px; /* Pill shape */
+  border-radius: 9999px;
   transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
   outline: none;
 }
@@ -892,7 +938,7 @@ nav ul li a:hover {
 .footer-content {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem; /* Reduced gap */
+  gap: 2rem;
 }
 
 @media (min-width: 768px) {
@@ -1007,7 +1053,6 @@ nav ul li a:hover {
   flex-shrink: 0;
 }
 
-/* Social Media */
 .social-icons-container {
   display: flex;
   align-items: center;
@@ -1033,13 +1078,5 @@ nav ul li a:hover {
   padding: 10px 15px;
   display: block;
   width: 100%;
-  margin: 0; /* Ensure no margin */
-}
-
-/* i aim to Remove any potential padding from body or html that might create space */
-html,
-body {
   margin: 0;
-  padding: 0;
-  overflow-x: hidden;
 }
